@@ -56,7 +56,7 @@ See [the example script](./example_script.sh)
 - use a dataset on rtition. For interactive jobs, you should use the `sinfo -o %G,%N,%P` - Get info on GPUs available, the nodelist they are on, and the partition to use.
 
 ## If you're moving over from Nikola...
-Your directoin can be found in `/share/nikola/export`.
+Your directory can be found in `/share/nikola/export`.
 
 ## If you need help...
 - Use the "#graphite" channel on the MLCircus Slack. **Please don't email Geoff/Jake/Kilian.**
