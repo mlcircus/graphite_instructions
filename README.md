@@ -58,5 +58,8 @@ See [the example script](./example_script.sh)
 ## If you're moving over from Nikola...
 Your directory can be found in `/share/nikola/export`.
 
+## Other useful tips:
+- [Felix's tips](./README_felix.md)
+
 ## If you need help...
 - Use the "#graphite" channel on the MLCircus Slack. **Please don't email Geoff/Jake/Kilian.**
