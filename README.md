@@ -1,7 +1,7 @@
 # Graphite Instructions
 Instructions for using the graphite cluster.
 
-** Help keep this document up to date! ** If you have any tips or tricks you want to add, please submit a PR!
+**Help keep this document up to date!** If you have any tips or tricks you want to add, please submit a PR!
 
 ## Getting an account
 To get an account on Graphite
