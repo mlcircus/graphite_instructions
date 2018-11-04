@@ -91,18 +91,17 @@ Please leave the passkey empty and replace the email address with your own addre
 
 2. Copy the private key to the authenticated key list.
 ```
-cat ~/.ssh/id\_rsa.pub >> ~/.ssh/authorized\_keys
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 ```
 
 3. Launch the first ssh connection from graphite to graphite to add graphite (ECDSA) to the list of known hosts.
 ```
-ssh graphite
+ssh graphite # answer "yes"
 ```
-Answer `yes`.
 
 4. Modify the [jupyter\_slurm.sh](./jupyter_slurm.sh) file and run:
 ```
-sbatch jupyter\_slurm.sh
+sbatch jupyter_slurm.sh
 
 ```
 The number of CPUs or GPUs, or memory usage can be set in the script.
