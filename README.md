@@ -94,9 +94,9 @@ Please leave the passkey empty and replace the email address with your own addre
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 ```
 
-3. Launch the first ssh connection from graphite to graphite to add graphite (ECDSA) to the list of known hosts.
+3. Launch the first ssh connection from graphite to graphite to add graphite (ECDSA) to the list of known hosts by answering `yes`
 ```
-ssh graphite # answer "yes"
+ssh graphite 
 ```
 
 4. Modify the [jupyter\_slurm.sh](./jupyter_slurm.sh) file and run:
