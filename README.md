@@ -55,7 +55,7 @@ See [the example script](./example_script.sh)
 - `srun --partition=interactive <my_job.sh>` - Run an interactive job
 - `squeue -l` - Get list of active or recently completed jobs
 - `scancel 183` - Cancel job with ID 183
-- `scontrol update --nodelist=nikola-compute01 --jobid=183` change the requested nodelist of the queued job 183 to nikola-compute01
+- `scontrol update nodelist=nikola-compute01 jobid=183` change the requested nodelist of the queued job 183 to nikola-compute01
 - use a dataset on rtition. For interactive jobs, you should use the `sinfo -o %G,%N,%P` - Get info on GPUs available, the nodelist they are on, and the partition to use.
 
 ## If you're moving over from Nikola...
