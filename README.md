@@ -86,16 +86,18 @@ The high level picture is to create an ssh tunnel from and end node that runs th
 To do so, we need an RSA key, so that the scrcipt can ssh to the master node (graphite) without asking for your password.
 
 1. Create your RSA private and public keys on graphite
-```ssh-keygen -t rsa -b 4096 -C "your_email@example.com"```
+```sh
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+```
 Please leave the passkey empty and replace the email address with your own address.
 
 2. Copy the private key to the authenticated key list.
-```
+```sh
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 ```
 
 3. Launch the first ssh connection from graphite to graphite to add graphite (ECDSA) to the list of known hosts by answering `yes`
-```
+```sh
 ssh graphite 
 ```
 
@@ -117,7 +119,7 @@ Reference: [Utku's post](https://evcu.github.io/notes/port-forwarding/)
 ### Using older CUDA and CuDNN
 This requires access to the nikola NFS `share/nikola/export/fw245`
 - Ensure that your environment module works. If you use zsh, please add this line to your `~/.zshrc`.
-```
+```sh
 module() { eval `/usr/bin/modulecmd zsh $*`; }
 ```
 - Use `module avail` to see available modules such as CUDA or CuDNN versions
@@ -129,15 +131,29 @@ module() { eval `/usr/bin/modulecmd zsh $*`; }
 ### For Slurm
 #### sinfo
 - To show detailed info of all partitions
-```
+```sh
 sinfo -o "%15P %.5a %.10l %.10s %.4r %.8h %.10g %.6D %.11T %15G %N"
 ```
 - To see how many GPUs on each machine
-```
+```sh
 sinfo -o "%40N %G"
 ```
-#### Launching an interactive shell job
+
+#### Useful aliases
+You may add these lines to your `.bashrc` or `.zshrc`.
+Due to the current graphite configuration, we are not allowed to see other's jobs `sq` and `sp` doesn't work. 
+We rely on `sqa` as an alternative to print the lastest log written by a daemon job.
+```sh
+alias sq='squeue -o "%.9i %.9P %80j %.15u %.8T %.10M %.9l %.6D %R"' # squeue with some addition info
+alias sqm='sq -u $USER' # sq for my jobs only
+alias sqmo='squeue -o "%.9i %.9P %80j %.15u %.8T %.10M %.9l %.6D %R %o" -u $USER' # sqm + showing the command as well
+alias sp='squeue -t PENDING -o "%.8Q %.10i %.3P %.9j %.6u %.2t %.16S %.10M %.10l %.5D %.12b %.2c %.4m %R" -S -t,-p,i | less -N ' # show all pending jobs
+alias sia='sinfo -o "%15P %.5a %.10l %.10s %.4r %.8h %.10g %.6D %.11T %15G %N"'
+alias sqa='ls -Art /share/nikola/export/graphite_usage/* | tail -n 1 | xargs cat'
 ```
+
+#### Launching an interactive shell job
+```sh
 # launch zsh with 2 CPU, 1 GPU, 50M memory
 srun --cpus-per-task 2 --gres=gpu:1 --mem=50M --partition=interactive --pty zsh
 ```
