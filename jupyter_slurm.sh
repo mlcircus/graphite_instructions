@@ -1,7 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=jupyterTest
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:1
+#SBATCH --cpus-per-task=1
+#SBATCH --gres=gpu:0
 #SBATCH --mem=8GB
 #SBATCH --time=1:00:00
 

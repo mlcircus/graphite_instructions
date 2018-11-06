@@ -55,6 +55,7 @@ See [the example script](./example_script.sh)
 - `srun --partition=interactive <my_job.sh>` - Run an interactive job
 - `squeue -l` - Get list of active or recently completed jobs
 - `scancel 183` - Cancel job with ID 183
+- `scontrol update nodelist=nikola-compute01 jobid=183` change the requested nodelist of the queued job 183 to nikola-compute01
 - use a dataset on rtition. For interactive jobs, you should use the `sinfo -o %G,%N,%P` - Get info on GPUs available, the nodelist they are on, and the partition to use.
 
 ## If you're moving over from Nikola...
@@ -81,43 +82,78 @@ fi
 [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh) with theme "ys" is recommended.
 
 ### Launching jupyter notebook on the cluster
-Modify the [jupyter\_slurm.sh](./jupyter_slurm.sh) file and run
+The high level picture is to create an ssh tunnel from and end node that runs the jupyter server and the masker node (graphite), and create another ssh tunnel from your local machine to the graphite using the same port. Therefore, the message can flow from your local machine to graphite and then the end node.
+To do so, we need an RSA key, so that the scrcipt can ssh to the master node (graphite) without asking for your password.
+
+1. Create your RSA private and public keys on graphite
+```sh
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+```
+Please leave the passkey empty and replace the email address with your own address.
+
+2. Copy the private key to the authenticated key list.
+```sh
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+```
+
+3. Launch the first ssh connection from graphite to graphite to add graphite (ECDSA) to the list of known hosts by answering `yes`
+```sh
+ssh graphite 
+```
+
+4. Modify the [jupyter\_slurm.sh](./jupyter_slurm.sh) file and run:
 ```
 sbatch jupyter_slurm.sh
+
 ```
+The number of CPUs or GPUs, or memory usage can be set in the script.
+You may set the port inside the script; otherwise it picks a random port in [6000, 9999].
 After the job starts running you'll be able to see the standard output in `slurm-3060.out` if the job id is 3060. You'll be able to find the token you need to login for the first time unless a password has been set.
-You'll be able to see the port number in `slurm-3060.out`. Let's say it's running on port 7446, then you can forward the local port by
+The port number is in `slurm-3060.out`. Let's say it's running on port 7446, then you can forward the local port by
 ```
 ssh -NfL 7446:localhost:7446 graphite
 ```
-
-This may require that you have RSA key at `~/.ssh/id_rsa` and append the public key `~/.ssh/id_rsa.pub` to `~/.ssh/authorized_keys`. Please follow this [link](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/) to create your own key.
 
 Reference: [Utku's post](https://evcu.github.io/notes/port-forwarding/)
 
 ### Using older CUDA and CuDNN
 This requires access to the nikola NFS `share/nikola/export/fw245`
 - Ensure that your environment module works. If you use zsh, please add this line to your `~/.zshrc`.
-```
+```sh
 module() { eval `/usr/bin/modulecmd zsh $*`; }
 ```
 - Use `module avail` to see available modules such as CUDA or CuDNN versions
 - Use `module use ~fw245/modulefiles` to use Felix's module files which include serveral versions of CUDA and CuDNN
 - Use `module list` to see all module currently loaded
-- Use `module add cuda/9.2 cudnn/v7.3-cuda-9.2` to use CUDA 9.2 with CuDNN v7.3 
+- Use `module add cuda/9.2 cudnn/v7.1-cuda-9.2` to use CUDA 9.2 with CuDNN v7.1 
 - Use `module rm cuda cudnn` to remove any CUDA or CuDNN loaded
 
 ### For Slurm
 #### sinfo
-```
-# to show detailed info of all partitions
+- To show detailed info of all partitions
+```sh
 sinfo -o "%15P %.5a %.10l %.10s %.4r %.8h %.10g %.6D %.11T %15G %N"
-# to see how many GPUs on each machine
+```
+- To see how many GPUs on each machine
+```sh
 sinfo -o "%40N %G"
 ```
 
-#### Launching an interactive shell job
+#### Useful aliases
+You may add these lines to your `.bashrc` or `.zshrc`.
+Due to the current graphite configuration, we are not allowed to see other's jobs `sq` and `sp` doesn't work. 
+We rely on `sqa` as an alternative to print the lastest log written by a daemon job.
+```sh
+alias sq='squeue -o "%.9i %.9P %80j %.15u %.8T %.10M %.9l %.6D %R"' # squeue with some addition info
+alias sqm='sq -u $USER' # sq for my jobs only
+alias sqmo='squeue -o "%.9i %.9P %80j %.15u %.8T %.10M %.9l %.6D %R %o" -u $USER' # sqm + showing the command as well
+alias sp='squeue -t PENDING -o "%.8Q %.10i %.3P %.9j %.6u %.2t %.16S %.10M %.10l %.5D %.12b %.2c %.4m %R" -S -t,-p,i | less -N ' # show all pending jobs
+alias sia='sinfo -o "%15P %.5a %.10l %.10s %.4r %.8h %.10g %.6D %.11T %15G %N"'
+alias sqa='ls -Art /share/nikola/export/graphite_usage/* | tail -n 1 | xargs cat'
 ```
+
+#### Launching an interactive shell job
+```sh
 # launch zsh with 2 CPU, 1 GPU, 50M memory
 srun --cpus-per-task 2 --gres=gpu:1 --mem=50M --partition=interactive --pty zsh
 ```
