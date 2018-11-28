@@ -8,9 +8,10 @@
 
 # modified from https://evcu.github.io/notes/port-forwarding/
 
-#Load necessary modules (uncomment when needed)
-module rm cuda cudnn
-module add cuda/9.1 cudnn/v7.1-cuda-9.1
+# Load necessary modules (uncomment when needed)
+# module use ~fw245/modulefiles
+# module rm cuda cudnn
+# module add cuda/9.0 cudnn/v7.0-cuda-9.0
 
 #Go to the folder you wanna run jupyter in
 cd $HOME
