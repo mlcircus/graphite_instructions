@@ -109,7 +109,7 @@ sbatch jupyter_slurm.sh
 The number of CPUs or GPUs, or memory usage can be set in the script.
 You may set the port inside the script; otherwise it picks a random port in [6000, 9999].
 After the job starts running you'll be able to see the standard output in `slurm-3060.out` if the job id is 3060. You'll be able to find the token you need to login for the first time unless a password has been set.
-The port number is in `slurm-3060.out`. Let's say it's running on port 7446, then you can forward the local port by
+The port number is in `slurm-3060.out`. Let's say it's running on port 7446, then you can forward the local port by running this on *your desktop or laptop*:
 ```
 ssh -NfL 7446:localhost:7446 graphite
 ```
