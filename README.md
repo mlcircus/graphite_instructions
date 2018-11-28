@@ -94,6 +94,7 @@ Please leave the passkey empty and replace the email address with your own addre
 2. Copy the private key to the authenticated key list.
 ```sh
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys # ensure that this file can only be read and written by yourself
 ```
 
 3. Launch the first ssh connection from graphite to graphite to add graphite (ECDSA) to the list of known hosts by answering `yes`
