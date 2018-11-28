@@ -122,6 +122,10 @@ This requires access to the nikola NFS `share/nikola/export/fw245`
 ```sh
 module() { eval `/usr/bin/modulecmd zsh $*`; }
 ```
+For bash users:
+```sh
+module() { eval `/usr/bin/modulecmd bash $*`; }
+```
 - Use `module avail` to see available modules such as CUDA or CuDNN versions
 - Use `module use ~fw245/modulefiles` to use Felix's module files which include serveral versions of CUDA and CuDNN
 - Use `module list` to see all module currently loaded
