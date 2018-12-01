@@ -94,6 +94,7 @@ Please leave the passkey empty and replace the email address with your own addre
 2. Copy the private key to the authenticated key list.
 ```sh
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys # ensure that this file can only be read and written by yourself
 ```
 
 3. Launch the first ssh connection from graphite to graphite to add graphite (ECDSA) to the list of known hosts by answering `yes`
@@ -109,7 +110,7 @@ sbatch jupyter_slurm.sh
 The number of CPUs or GPUs, or memory usage can be set in the script.
 You may set the port inside the script; otherwise it picks a random port in [6000, 9999].
 After the job starts running you'll be able to see the standard output in `slurm-3060.out` if the job id is 3060. You'll be able to find the token you need to login for the first time unless a password has been set.
-The port number is in `slurm-3060.out`. Let's say it's running on port 7446, then you can forward the local port by
+The port number is in `slurm-3060.out`. Let's say it's running on port 7446, then you can forward the local port by running this on *your desktop or laptop*:
 ```
 ssh -NfL 7446:localhost:7446 graphite
 ```
@@ -121,6 +122,10 @@ This requires access to the nikola NFS `share/nikola/export/fw245`
 - Ensure that your environment module works. If you use zsh, please add this line to your `~/.zshrc`.
 ```sh
 module() { eval `/usr/bin/modulecmd zsh $*`; }
+```
+For bash users:
+```sh
+module() { eval `/usr/bin/modulecmd bash $*`; }
 ```
 - Use `module avail` to see available modules such as CUDA or CuDNN versions
 - Use `module use ~fw245/modulefiles` to use Felix's module files which include serveral versions of CUDA and CuDNN
