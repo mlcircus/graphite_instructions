@@ -15,17 +15,17 @@ To get an account on Graphite
   This should be the first step of every job you launch.
   Please do not read a dataset from your home directory or from NFS.
   It slows down the server for everyone.
-- **Don't keep more than 10GB of data in your home folder.** 
+- **Don't keep more than 10GB of data in your home folder.**
   The graphite cluster is not intended for long-term storage of files.
-- **Remove all files from `/scratch` after your job.** 
+- **Remove all files from `/scratch` after your job.**
   If you frequently use a large dataset, you can keep it in `/scratch/datasets`.
   All other files **MUST** be removed from `/scratch`.
   Space on these drives is limited.
-- **Create a personal anaconda environment for your Python libraries.** 
+- **Create a personal anaconda environment for your Python libraries.**
   This isn't required, but recommended.
   This will make it easy to use a specific version of PyTorch, Tensorflow, or whatever library you normally use.
   See [the anaconda docs](https://conda.io/docs/user-guide/tasks/manage-environments.html) for more info.
-- **Run non-interactive jobs unless you are debugging your code.** 
+- **Run non-interactive jobs unless you are debugging your code.**
   This isn't required, but recommended.
   Interactive jobs require more resources, and you'll be more efficient if you run scripted jobs.
 
@@ -48,7 +48,7 @@ This behavior can be changed, but it emphasizes how important it is to know your
 
 ### Example job script
 See [the example script](./example_script.sh)
- 
+
 ## List of useful commands
 - `sbatch --requeue <my_job.sh>` - Run a (non-interactive) job. The optional arguments are:
 
@@ -99,7 +99,7 @@ chmod 600 ~/.ssh/authorized_keys # ensure that this file can only be read and wr
 
 3. Launch the first ssh connection from graphite to graphite to add graphite (ECDSA) to the list of known hosts by answering `yes`
 ```sh
-ssh graphite 
+ssh graphite
 ```
 
 4. Modify the [jupyter\_slurm.sh](./jupyter_slurm.sh) file and run:
@@ -130,7 +130,7 @@ module() { eval `/usr/bin/modulecmd bash $*`; }
 - Use `module avail` to see available modules such as CUDA or CuDNN versions
 - Use `module use ~fw245/modulefiles` to use Felix's module files which include serveral versions of CUDA and CuDNN
 - Use `module list` to see all module currently loaded
-- Use `module add cuda/9.2 cudnn/v7.1-cuda-9.2` to use CUDA 9.2 with CuDNN v7.1 
+- Use `module add cuda/9.2 cudnn/v7.1-cuda-9.2` to use CUDA 9.2 with CuDNN v7.1
 - Use `module rm cuda cudnn` to remove any CUDA or CuDNN loaded
 
 ### For Slurm
@@ -146,7 +146,7 @@ sinfo -o "%40N %G"
 
 #### Useful aliases
 You may add these lines to your `.bashrc` or `.zshrc`.
-Due to the current graphite configuration, we are not allowed to see other's jobs `sq` and `sp` doesn't work. 
+Due to the current graphite configuration, we are not allowed to see other's jobs `sq` and `sp` doesn't work.
 We rely on `sqa` as an alternative to print the lastest log written by a daemon job.
 ```sh
 alias sq='squeue -o "%.9i %.9P %80j %.15u %.8T %.10M %.9l %.6D %R"' # squeue with some addition info
@@ -154,7 +154,7 @@ alias sqm='sq -u $USER' # sq for my jobs only
 alias sqmo='squeue -o "%.9i %.9P %80j %.15u %.8T %.10M %.9l %.6D %R %o" -u $USER' # sqm + showing the command as well
 alias sp='squeue -t PENDING -o "%.8Q %.10i %.3P %.9j %.6u %.2t %.16S %.10M %.10l %.5D %.12b %.2c %.4m %R" -S -t,-p,i | less -N ' # show all pending jobs
 alias sia='sinfo -o "%15P %.5a %.10l %.10s %.4r %.8h %.10g %.6D %.11T %15G %N"'
-alias sqa='ls -Art /share/nikola/export/graphite_usage/* | tail -n 1 | xargs cat'
+alias sqa='cat /share/nikola/export/graphite_usage/$(date "+sacct.%m%d%Y-%H")`printf %02d $(($(date "+%M") / 15 * 15))`'
 ```
 
 #### Launching an interactive shell job
